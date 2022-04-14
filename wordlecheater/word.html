@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wordle Solver</title>
+    </head>
+
+    <body>
+        <link type="text/css" rel="stylesheet" href="word.css"/>
+
+        <article>
+            <div class="letterClass" id="char0">
+                <p id="letter0"></p>
+                <button style="background-color: green;" onclick="green(0)">Green</button>
+                <button style="background-color: yellow;" onclick="yellow(0)">Yellow</button>
+                <button style="background-color: darkgray;" onclick="gray(0)">Gray</button>
+            </div>
+            <div class="letterClass" id="char1">
+                <p id="letter1"></p>
+                <button style="background-color: green;" onclick="green(1)">Green</button>
+                <button style="background-color: yellow;" onclick="yellow(1)">Yellow</button>
+                <button style="background-color: darkgray;" onclick="gray(1)">Gray</button>
+            </div>
+            <div class="letterClass" id="char2">
+                <p id="letter2"></p>
+                <button style="background-color: green;" onclick="green(2)">Green</button>
+                <button style="background-color: yellow;" onclick="yellow(2)">Yellow</button>
+                <button style="background-color: darkgray;" onclick="gray(2)">Gray</button>
+            </div>
+            <div class="letterClass" id="char3">
+                <p id="letter3"></p>
+                <button style="background-color: green;" onclick="green(3)">Green</button>
+                <button style="background-color: yellow;" onclick="yellow(3)">Yellow</button>
+                <button style="background-color: darkgray;" onclick="gray(3)">Gray</button>
+            </div>
+            <div class="letterClass" id="char4">
+                <p id="letter4"></p>
+                <button style="background-color: green;" onclick="green(4)">Green</button>
+                <button style="background-color: yellow;" onclick="yellow(4)">Yellow</button>
+                <button style="background-color: darkgray;" onclick="gray(4)">Gray</button>
+            </div>
+            <div style="clear: both; padding-top: 15px;">
+                <button style="text-align: center; width: 400px; background-color: green;" onclick="enter()">Enter</button>
+            </div>
+            <div style="clear: both; padding-top: 15px;">
+                <button style="text-align: center; width: 400px; background-color: aqua;" onclick="myword()">Guess</button>
+            </div>
+        </article>
+
+        <aside>
+            <p id="words"></p>
+        </aside>
+
+        <script src="word.js"></script>
+    </body>
+</html>
