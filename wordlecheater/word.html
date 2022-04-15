@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wordle Solver</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body>
+        <link type="text/css" rel="stylesheet" href="word.css"/>
+
+        <article>
+            <div class="letterClass" id="char0">
+                <h1 id="letter0">?</h1>
+                <button class="green" onclick="green(0)">Green</button>
+                <button class="yellow" onclick="yellow(0)">Yellow</button>
+                <button class="gray" onclick="gray(0)">Gray</button>
+            </div>
+            <div class="letterClass" id="char1">
+                <h1 id="letter1">?</h1>
+                <button class="green" onclick="green(1)">Green</button>
+                <button class="yellow" onclick="yellow(1)">Yellow</button>
+                <button class="gray" onclick="gray(1)">Gray</button>
+            </div>
+            <div class="letterClass" id="char2">
+                <h1 id="letter2">?</h1>
+                <button class="green" onclick="green(2)">Green</button>
+                <button class="yellow" onclick="yellow(2)">Yellow</button>
+                <button class="gray" onclick="gray(2)">Gray</button>
+            </div>
+            <div class="letterClass" id="char3">
+                <h1 id="letter3">?</h1>
+                <button class="green" onclick="green(3)">Green</button>
+                <button class="yellow" onclick="yellow(3)">Yellow</button>
+                <button class="gray" onclick="gray(3)">Gray</button>
+            </div>
+            <div class="letterClass" id="char4">
+                <h1 id="letter4">?</h1>
+                <button class="green" onclick="green(4)">Green</button>
+                <button class="yellow" onclick="yellow(4)">Yellow</button>
+                <button class="gray" onclick="gray(4)">Gray</button>
+            </div>
+            <div class="actions">
+                <button class="enter" onclick="enter()">Enter</button>
+            </div>
+            <div class="actions">
+                <button class="guess" onclick="myword()">Guess</button>
+            </div>
+        </article>
+
+        <aside>
+            <p id="words"></p>
+            <button class="gray" onclick="previous()">Previous</button>
+            <button class="gray" onclick="next()">Next</button>
+        </aside>
+
+        <script src="word.js"></script>
+    </body>
+</html>
