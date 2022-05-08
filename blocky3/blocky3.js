@@ -14,6 +14,7 @@ let floating = false;
 let mySpeed = 1;
 let theSpeed = 0;
 let mySpeedSmall = "0";
+let pause = false;
 
 if (randomHeight === 1) {
     nextTileHeight = 150;
@@ -111,6 +112,32 @@ let reGravity = function() {
     useGravity = true;
 };
 
+let key = function() {
+    //make the player jump
+    $("body").keydown(function (event) {
+        let letter = event.key;
+
+        if (letter === 'ArrowUp') {
+            if (canJump === true) {
+                //jump
+                canJump = false;
+                useGravity = false;
+                playerHeight = playerHeight + 150;
+                setTimeout(reGravity, 125);
+            };
+        };
+        if (letter === ' ') {
+            if (pause === false) {
+                pause = true;
+                scroll = false;
+            } else {
+                pause = false;
+                scroll = true;
+            };
+        };
+    });
+};
+
 let speed = function() {
     //speed up the game
     theSpeed = Math.floor(mySpeed);
@@ -138,9 +165,11 @@ let tick = function() {
             recordSpeed();
             tileX = tileX - 1;
         };
-        jump();
+        key();
         gravity();
         setTimeout(tick, 0.1);
+    } else if (pause === true) {
+        setTimeout(tick, 1000);
     } else {
         //stop game
         ctx.font = "145px Courier";
