@@ -1,0 +1,62 @@
+button {
+    background-color: tan;
+    height: 10px;
+    width: 10px;
+}
+
+html {
+    min-width: 312px;
+}
+
+.row {
+    clear: both;
+}
+
+@media screen and (max-width: 374px) {
+    button {
+        height: 26px;
+        width: 26px;
+    }
+}
+
+@media screen and (min-width: 375px) {
+    button {
+        height: 32px;
+        width: 32px;
+    }
+}
+
+@media screen and (min-width: 425px) {
+    button {
+        height: 37px;
+        width: 37px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    button {
+        height: 71px;
+        width: 71px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    button {
+        height: 97px;
+        width: 97px;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    button {
+        height: 138px;
+        width: 138px;
+    }
+}
+
+@media screen and (min-width: 2560px) {
+    button {
+        height: 250px;
+        width: 250px;
+    }
+}
