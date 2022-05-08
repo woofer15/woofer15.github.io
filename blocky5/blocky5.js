@@ -90,7 +90,7 @@ let score = function() {
     ctx.fillText("Score: " + myScore, 0, 0);
     let smallScore = mySpeedSmall.split(".")[0]
     smallScore = parseInt(smallScore);
-    myScore = myScore + (smallScore * 99);
+    myScore = myScore + (smallScore * 9999);
 };
 
 let reGravity = function() {
