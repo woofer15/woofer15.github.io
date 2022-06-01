@@ -1,5 +1,6 @@
 let possibleQuestions = []
 let myQuestions = []
+let questionNum = 0;
 let entry = {
     firstTry : [
         false, //question done
@@ -24,6 +25,9 @@ function clearStorage() {
 };
 
 function start() {
+    possibleQuestions = [];
+    myQuestions = [];
+    questionNum = 0;
     
     // will create default entry in storage for all items that are not found
     for (let i = 1; i < 13; i++) {
@@ -50,12 +54,13 @@ function start() {
 
     console.log(myQuestions);
 
-    displayQuestion(0)
+    displayQuestion()
     document.getElementById('questionAndAnswerContainer').style.display = 'block'
 }
 
-function displayQuestion(index) {
-    document.getElementById('question').innerText = myQuestions[index] + " = "
+function displayQuestion() {
+    console.log('question ' + questionNum)
+    document.getElementById('question').innerText = myQuestions[questionNum] + " = "
 }
 
 function createKey(first, second) {
@@ -128,4 +133,29 @@ function sort(first, second) {
 
 function getRandomIntBetween(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function submit() {
+    console.log('question num = ' +questionNum)
+    
+    let answer = document.getElementById('answer').value;
+    let question = myQuestions[questionNum];
+    let storage  = JSON.parse(localStorage.getItem(question))
+
+    if (question.split('x')[0] * question.split('x')[1] === answer) {
+        storage.firstTry[1] = true
+        localStorage.setItem(question, storage);
+    } else {
+        storage.firstTry[1] = false;
+        localStorage.setItem(question, storage);
+    };
+    
+    questionNum++
+
+    if (questionNum < 10) {
+        displayQuestion()
+    }
+    else {
+        document.getElementById('questionAndAnswerContainer').style.display = 'none'
+    }
 }
