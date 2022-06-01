@@ -3,17 +3,23 @@ let myQuestions = [];
 
 function clearStorage() {
     localStorage.clear();
-}
+    console.log('clear');
+};
 
 function start() {
     possibleQuestions = []
     myQuestions = []
-
+    
+    let questionResultFromStorage
     for (let i = 1; i < 13; i++) {
         for (let j = 1; j < 13; j++) {
+            questionResultFromStorage = localStorage.getItem(i + 'x' + j)
+            questionResultFromStorage = JSON.parse(questionResultFromStorage)
             createStorage(i, j);
         }
     }
+
+    findQuestions(questionResultFromStorage);
     let questionIndex = []
     let index
     while (questionIndex.length < 10) {
@@ -60,15 +66,80 @@ function createStorage(first, second) {
 function readStorage(first, second) {
     let questionResultFromStorage = localStorage.getItem(first + 'x' + second)
     questionResultFromStorage = JSON.parse(questionResultFromStorage)
-    //console.log(questionResultFromStorage);
-    findQuestions(questionResultFromStorage, first, second)
 }
 
 function findQuestions(questionStorage, first, second) {
-    if (questionStorage.firstTry[0] === false) {
-        possibleQuestions.push(first + 'x' + second)
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (questionStorage.firstTry[0] === false) {
+                possibleQuestions.push(i + 'x' + j)
+            }
+        }
+    }
+
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (possibleQuestions.length < 10) {
+                if (questionStorage.secondTry[0] === false) {
+                    possibleQuestions.push(i + 'x' + j)
+                }
+            }
+        }
+    }
+
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (possibleQuestions.length < 10) {
+                if (questionStorage.thirdTry[0] === false) {
+                    possibleQuestions.push(i + 'x' + j)
+                }
+            }
+        }
+    }
+
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (possibleQuestions.length < 10) {
+                if (questionStorage.firstTry[1] === false) {
+                    possibleQuestions.push(i + 'x' + j)
+                }
+            }
+        }
+    }
+
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (possibleQuestions.length < 10) {
+                if (questionStorage.secondTry[1] === false) {
+                    possibleQuestions.push(i + 'x' + j)
+                }
+            }
+        }
+    }
+
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (possibleQuestions.length < 10) {
+                if (questionStorage.thirdTry[1] === false) {
+                    possibleQuestions.push(i + 'x' + j)
+                }
+            }
+        }
+    }
+
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            if (possibleQuestions.length < 10) {
+                sort(i, j)
+            }
+        }
     }
 }
+
+function sort(first, second) {
+    let key = first + 'x' + second;
+    let average = JSON.parse(localStorage.getItem(key)).firstTry[2] + JSON.parse(localStorage.getItem(key)).secondTry[2] + JSON.parse(localStorage.getItem(key)).thirdTry[2] / 3
+};
 
 function getRandomIntBetween(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)

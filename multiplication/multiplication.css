@@ -1,3 +1,7 @@
+h1 {
+    text-align: center;
+}
+
 .bg-ocean {
     background-image: linear-gradient(to bottom, #00FFFF, #000000);
     background-attachment: fixed;
