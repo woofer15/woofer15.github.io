@@ -1,3 +1,15 @@
+.center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid white;
+    padding: 10px;
+}
+.correctResult {
+    color: green;
+}
+.incorrectResult {
+    color:red
+}
 
 .bg-ocean {
     background-image: linear-gradient(to bottom, #00FFFF, #000000);
@@ -10,7 +22,7 @@
     background-attachment: fixed;
     color: #000000;
 }
-
+/* 
 .bg-light {
     background-color: white;
     color: #000000;
@@ -19,7 +31,7 @@
 .bg-dark {
     background-color: black;
     color: #FFFFFF;
-}
+} */
 
 .bg-shades {
     background-image: linear-gradient(to bottom right, #000000, #FFFFFF);

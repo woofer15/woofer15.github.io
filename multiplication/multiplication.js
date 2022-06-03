@@ -1,7 +1,10 @@
 let possibleQuestions = []
 let myQuestions = []
-let questionNum = 0;
+let questionNum = 0
+let startTime
+
 let entry = {
+    
     firstTry : [
         false, //question done
         false, //question correct
@@ -19,23 +22,13 @@ let entry = {
     ]
 }
 
-function clearStorage() {
-    localStorage.clear();
-    console.log('clear');
-};
-
 function start() {
-    possibleQuestions = [];
-    myQuestions = [];
-    questionNum = 0;
-    
-    // will create default entry in storage for all items that are not found
-    for (let i = 1; i < 13; i++) {
-        for (let j = 1; j < 13; j++) {
-            createStorage(i, j)
-        }
-    }
+    clearResultsContainer()
 
+    possibleQuestions = []
+    myQuestions = []
+    questionNum = 0
+    
     // fill possibleQuestions array
     findQuestions()
 
@@ -49,18 +42,26 @@ function start() {
         }
     }
     for (let x = 0; x < 10; x++) {
-        myQuestions.push(possibleQuestions[questionIndex[x]]);
+        myQuestions.push(possibleQuestions[questionIndex[x]])
     }
 
-    console.log(myQuestions);
+    console.log(myQuestions)
 
     displayQuestion()
-    document.getElementById('questionAndAnswerContainer').style.display = 'block'
+
+    document.getElementById('answer').addEventListener("keyup", function(event) {
+        if (event.code === 'Enter') {
+            submit()
+        }
+    })
+
+    document.getElementById('questionAndAnswerContainer').style.display = 'block'     
 }
 
 function displayQuestion() {
-    console.log('question ' + questionNum)
     document.getElementById('question').innerText = myQuestions[questionNum] + " = "
+    document.getElementById('answer').value = ''
+    startTime = Date.now()
 }
 
 function createKey(first, second) {
@@ -78,17 +79,22 @@ function createStorage(first, second) {
 function readStorage(first, second) {
     let questionResultFromStorage = localStorage.getItem(createKey(first, second))
     if (questionResultFromStorage === undefined) {
-        return undefined
+        createStorage(first, second)
+        questionResultFromStorage = localStorage.getItem(createKey(first, second))
     }
-    else {
-        return JSON.parse(questionResultFromStorage)
-    }
+  
+    return JSON.parse(questionResultFromStorage)
+}
+
+function clearStorage() {
+    localStorage.clear()
 }
 
 function findQuestions() {
     for (let i = 1; i < 13; i++) {
         for (let j = 1; j < 13; j++) {
             let questionFromStorage = readStorage(i, j)
+            
             if (questionFromStorage.firstTry[0] === false) {
                 possibleQuestions.push(createKey(i, j))
             }
@@ -136,20 +142,26 @@ function getRandomIntBetween(min, max) { // min and max included
 }
 
 function submit() {
-    console.log('question num = ' +questionNum)
     
-    let answer = document.getElementById('answer').value;
-    let question = myQuestions[questionNum];
-    let storage  = JSON.parse(localStorage.getItem(question))
+    let timeTaken = (Date.now() - startTime) / 1000
+    console.log('time taken = ' + timeTaken)
 
-    if (question.split('x')[0] * question.split('x')[1] === answer) {
+    let question = myQuestions[questionNum]
+    let userAnswer = parseInt(document.getElementById('answer').value)
+    let correctAnswer = parseInt(question.split('x')[0]) * parseInt(question.split('x')[1])
+    let isCorrect = userAnswer === correctAnswer
+    updateResultsContainer(question + " = " +userAnswer, correctAnswer, isCorrect)
+
+    let storage  = JSON.parse(localStorage.getItem(question))
+    
+    if (isCorrect) {
         storage.firstTry[1] = true
-        localStorage.setItem(question, storage);
+        localStorage.setItem(question, JSON.stringify(storage));
     } else {
         storage.firstTry[1] = false;
-        localStorage.setItem(question, storage);
+        localStorage.setItem(question, JSON.stringify(storage));
     };
-    
+     
     questionNum++
 
     if (questionNum < 10) {
@@ -158,4 +170,25 @@ function submit() {
     else {
         document.getElementById('questionAndAnswerContainer').style.display = 'none'
     }
+}
+
+function clearResultsContainer() {
+    let resultsContainer = document.getElementById('results')
+    while(resultsContainer.firstChild) {
+        resultsContainer.removeChild(resultsContainer.firstChild)
+    }
+}
+
+function updateResultsContainer(userQuestionAndAnswer, correctAnswer, isCorrect) {
+    let resultRow = document.createElement('div')
+    if (isCorrect) {
+        resultRow.innerText = userQuestionAndAnswer
+        resultRow.classList.add('correctResult')
+    }
+    else {
+        resultRow.innerText = userQuestionAndAnswer + ' => ' +correctAnswer
+        resultRow.classList.add('incorrectResult')
+    }
+
+    document.getElementById('results').appendChild(resultRow)
 }
