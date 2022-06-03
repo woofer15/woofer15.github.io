@@ -123,18 +123,48 @@ function findQuestions() {
         }
     }
 
-    for (let i = 1; i < 13; i++) {
-        for (let j = 1; j < 13; j++) {
-            if (possibleQuestions.length < 10) {
-                sort(i, j)
+    if (possibleQuestions.length < 10) {
+        for (let i = 1; i < 13; i++) {
+            for (let j = 1; j < 13; j++) {
+                if (possibleQuestions.length < 10) {
+                    sort(i, j)
+                }
             }
         }
+        sort_2()
+
+        for (let index = 0; index < 10; index++) {
+            possibleQuestions.push(tenQuestions[index])
+        };
     }
 }
 
+let numArray = []
+let tenQuestions = []
+
 function sort(first, second) {
     let key = first + 'x' + second;
-    let average = JSON.parse(localStorage.getItem(key)).firstTry[2] + JSON.parse(localStorage.getItem(key)).secondTry[2] + JSON.parse(localStorage.getItem(key)).thirdTry[2] / 3
+    let storage = JSON.parse(localStorage.getItem(key))
+    let average = storage.firstTry[0] + storage.secondTry[0] + storage.thirdTry[0] / 3
+    numArray.push(average)
+
+    numArray.sort(function(a, b) {
+        return b - a;
+    });
+};
+
+function sort_2() {
+    let key = first + 'x' + second;
+    let storage = JSON.parse(localStorage.getItem(key))
+    let average = storage.firstTry[0] + storage.secondTry[0] + storage.thirdTry[0] / 3
+
+    for (let i = 1; i < 13; x++) {
+        for (let j = 1; j < 13; y++) {
+            if (numArray[0] === average || numArray[1] === average || numArray[2] === average || numArray[3] === average || numArray[4] === average || numArray[5] === average || numArray[6] === average || numArray[7] === average || numArray[8] === average || numArray[9] === average) {
+                tenQuestions.push(key)
+            }
+        }
+    }
 };
 
 function getRandomIntBetween(min, max) { // min and max included 
@@ -149,19 +179,11 @@ function submit() {
     let question = myQuestions[questionNum]
     let userAnswer = parseInt(document.getElementById('answer').value)
     let correctAnswer = parseInt(question.split('x')[0]) * parseInt(question.split('x')[1])
-    let isCorrect = userAnswer === correctAnswer
+    let isCorrect = (userAnswer === correctAnswer)
     updateResultsContainer(question + " = " +userAnswer, correctAnswer, isCorrect)
 
     let storage  = JSON.parse(localStorage.getItem(question))
-    
-    if (isCorrect) {
-        storage.firstTry[1] = true
-        localStorage.setItem(question, JSON.stringify(storage));
-    } else {
-        storage.firstTry[1] = false;
-        localStorage.setItem(question, JSON.stringify(storage));
-    };
-     
+    updateStorage(storage, timeTaken, isCorrect);
     questionNum++
 
     if (questionNum < 10) {
@@ -171,6 +193,39 @@ function submit() {
         document.getElementById('questionAndAnswerContainer').style.display = 'none'
     }
 }
+
+function shiftStorage(storage) {
+    storage.firstTry[0] = storage.secondTry[0]
+    storage.firstTry[1] = storage.secondTry[1]
+    storage.firstTry[2] = storage.secondTry[2]
+
+    storage.secondTry[0] = storage.thirdTry[0]
+    storage.secondTry[1] = storage.thirdTry[1]
+    storage.secondTry[2] = storage.thirdTry[2]
+
+    return
+};
+
+function updateStorage(storage, time, correct) {
+    if (storage.firstTry[0] === false) {
+        storage.firstTry[0] = true
+        storage.firstTry[1] = correct
+        storage.firstTry[2] = time
+    } else if (storage.secondTry[0] === false) {
+        storage.secondTry[0] = true
+        storage.secondTry[1] = correct
+        storage.secondTry[2] = time
+    } else if (storage.thirdTry[0] === false) {
+        storage.thirdTry[0] = true
+        storage.thirdTry[1] = correct
+        storage.thirdTry[2] = time
+    } else {
+        shiftStorage(storage)
+        storage.thirdTry[0] = true
+        storage.thirdTry[1] = correct
+        storage.thirdTry[2] = time
+    }
+};
 
 function clearResultsContainer() {
     let resultsContainer = document.getElementById('results')
