@@ -1,10 +1,10 @@
+const NUM_QUESTIONS_PER_SESSION = 10
 let possibleQuestions = []
 let myQuestions = []
-let questionNum = 0
-let startTime
+let currentQuestionNum = 0
+let currentQuestionStartTime
 
 let entry = {
-    
     firstTry : [
         false, //question done
         false, //question correct
@@ -22,26 +22,37 @@ let entry = {
     ]
 }
 
+init()
+
+function init() {
+    document.getElementById('answer').addEventListener("keyup", function(event) {
+        if (event.code === 'Enter') {
+            submit()
+        }
+    })
+}
+
 function start() {
     clearResultsContainer()
 
     possibleQuestions = []
     myQuestions = []
-    questionNum = 0
+    currentQuestionNum = 0
     
-    // fill possibleQuestions array
+    // fill the possibleQuestions array
     findQuestions()
 
-    // get 10 random possibleQuestions and put into myQuestions
+    // get NUM_QUESTIONS_PER_SESSION random possibleQuestions and put into myQuestions
     let questionIndex = []
     let index
-    while (questionIndex.length < 10) {
+    while (questionIndex.length < NUM_QUESTIONS_PER_SESSION) {
         index = getRandomIntBetween(0, possibleQuestions.length - 1)
+        // make sure we do not add duplicate random numbers
         if (questionIndex.indexOf(index) === -1) {
             questionIndex.push(index)
         }
     }
-    for (let x = 0; x < 10; x++) {
+    for (let x = 0; x < questionIndex.length; x++) {
         myQuestions.push(possibleQuestions[questionIndex[x]])
     }
 
@@ -49,19 +60,14 @@ function start() {
 
     displayQuestion()
 
-    document.getElementById('answer').addEventListener("keyup", function(event) {
-        if (event.code === 'Enter') {
-            submit()
-        }
-    })
-
+    // unhide the question/answer container
     document.getElementById('questionAndAnswerContainer').style.display = 'block'     
 }
 
 function displayQuestion() {
-    document.getElementById('question').innerText = myQuestions[questionNum] + " = "
+    document.getElementById('question').innerText = myQuestions[currentQuestionNum] + " = "
     document.getElementById('answer').value = ''
-    startTime = Date.now()
+    currentQuestionStartTime = Date.now()
 }
 
 function createKey(first, second) {
@@ -76,14 +82,18 @@ function createStorage(first, second) {
     }
 }
 
-function readStorage(first, second) {
+function readStorage(first, second) {    
     let questionResultFromStorage = localStorage.getItem(createKey(first, second))
-    if (questionResultFromStorage === undefined) {
+    if (questionResultFromStorage === null) {
         createStorage(first, second)
         questionResultFromStorage = localStorage.getItem(createKey(first, second))
     }
   
     return JSON.parse(questionResultFromStorage)
+}
+
+function writeStorage(key, entry) {
+    localStorage.setItem(key, JSON.stringify(entry))
 }
 
 function clearStorage() {
@@ -94,14 +104,13 @@ function findQuestions() {
     for (let i = 1; i < 13; i++) {
         for (let j = 1; j < 13; j++) {
             let questionFromStorage = readStorage(i, j)
-            
             if (questionFromStorage.firstTry[0] === false) {
                 possibleQuestions.push(createKey(i, j))
             }
         }
     }
 
-    if (possibleQuestions.length < 10) {
+    if (possibleQuestions.length < NUM_QUESTIONS_PER_SESSION) {
         for (let i = 1; i < 13; i++) {
             for (let j = 1; j < 13; j++) {
                 let questionFromStorage = readStorage(i, j)
@@ -112,7 +121,7 @@ function findQuestions() {
         }
     }
 
-    if (possibleQuestions.length < 10) {
+    if (possibleQuestions.length < NUM_QUESTIONS_PER_SESSION) {
         for (let i = 1; i < 13; i++) {
             for (let j = 1; j < 13; j++) {
                 let questionFromStorage = readStorage(i, j)
@@ -123,10 +132,10 @@ function findQuestions() {
         }
     }
 
-    if (possibleQuestions.length < 10) {
+    if (possibleQuestions.length < NUM_QUESTIONS_PER_SESSION) {
         for (let i = 1; i < 13; i++) {
             for (let j = 1; j < 13; j++) {
-                if (possibleQuestions.length < 10) {
+                if (possibleQuestions.length < NUM_QUESTIONS_PER_SESSION) {
                     sort(i, j)
                 }
             }
@@ -173,20 +182,22 @@ function getRandomIntBetween(min, max) { // min and max included
 
 function submit() {
     
-    let timeTaken = (Date.now() - startTime) / 1000
+    let timeTaken = (Date.now() - currentQuestionStartTime) / 1000
     console.log('time taken = ' + timeTaken)
 
-    let question = myQuestions[questionNum]
+    let question = myQuestions[currentQuestionNum]
     let userAnswer = parseInt(document.getElementById('answer').value)
     let correctAnswer = parseInt(question.split('x')[0]) * parseInt(question.split('x')[1])
     let isCorrect = (userAnswer === correctAnswer)
     updateResultsContainer(question + " = " +userAnswer, correctAnswer, isCorrect)
 
     let storage  = JSON.parse(localStorage.getItem(question))
-    updateStorage(storage, timeTaken, isCorrect);
-    questionNum++
+    storage = updateStorage(storage, timeTaken, isCorrect)
+    writeStorage(question, storage)
+    
+    currentQuestionNum++
 
-    if (questionNum < 10) {
+    if (currentQuestionNum < 10) {
         displayQuestion()
     }
     else {
@@ -202,9 +213,9 @@ function shiftStorage(storage) {
     storage.secondTry[0] = storage.thirdTry[0]
     storage.secondTry[1] = storage.thirdTry[1]
     storage.secondTry[2] = storage.thirdTry[2]
-
+ 
     return
-};
+}
 
 function updateStorage(storage, time, correct) {
     if (storage.firstTry[0] === false) {
@@ -224,8 +235,10 @@ function updateStorage(storage, time, correct) {
         storage.thirdTry[0] = true
         storage.thirdTry[1] = correct
         storage.thirdTry[2] = time
-    }
-};
+    }    
+
+    return storage
+}
 
 function clearResultsContainer() {
     let resultsContainer = document.getElementById('results')
@@ -246,4 +259,46 @@ function updateResultsContainer(userQuestionAndAnswer, correctAnswer, isCorrect)
     }
 
     document.getElementById('results').appendChild(resultRow)
+}
+ 
+function displayStats() {
+    for (let i = 1; i < 13; i++) {
+
+        let column = document.getElementById('userStats-' +i)
+        column.innerText = i
+
+        for (let j = 1; j < 13; j++) {  
+
+            let result = readStorage(i, j)
+
+            let elem = document.createElement('div')
+            elem.appendChild(createStatusElem(j, result.firstTry[0], result.firstTry[1], result.firstTry[2]))
+            elem.appendChild(createStatusElem(j, result.secondTry[0], result.secondTry[1], result.secondTry[2]))
+            elem.appendChild(createStatusElem(j, result.thirdTry[0], result.thirdTry[1], result.thirdTry[2]))
+        
+            column.appendChild(elem)
+        }
+    }
+
+}
+
+function createStatusElem(index, questionDone, questionCorrect, timeTaken) {
+
+    let elem = document.createElement('span')
+    elem.innerText = index
+    elem.style.display = 'inline-block'
+    elem.classList.add('multiplier')
+    if (questionDone  === false) {
+        elem.classList.add('multiplierStatusBlank')
+    }
+    else {
+        if (questionCorrect === true) {
+            elem.classList.add('multiplierStatusCorrect')
+        }
+        else {
+            elem.classList.add('multiplierStatusIncorrect')
+        }
+    }
+
+    return elem
 }

@@ -10,6 +10,29 @@
 .incorrectResult {
     color:red
 }
+.multiplierStatus {
+    width: 20px;
+    height: 20px;
+}
+.multiplierStatusBlank {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    background-color: transparent;
+}
+.multiplierStatusCorrect {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    background-color: green;
+}
+.multiplierStatusIncorrect {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    background-color: red;
+}
+
 
 .bg-ocean {
     background-image: linear-gradient(to bottom, #00FFFF, #000000);
