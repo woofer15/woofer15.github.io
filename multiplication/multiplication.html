@@ -19,42 +19,50 @@
         <h1 class="display-1 text-center">Multiplication Practice</h1>
         <hr>
 
-        <div style="padding: 10px">
-            <button type="button" onclick="start()" class="btn btn-outline-primary">Start</button>
-        </div>
-<!-- 
-        <button class="input-fire" onclick="start()">Start</button>
-        <br><br><br>
-        <button class="input-fire" onclick="clearStorage()">Clear</button> -->
-
-        <div id="questionAndAnswerContainer" class="center container-fluid"  style="display:none">
-            <span id="question" class="display-6"></span>
-            <input id="answer" autocomplete="off" class="display-6" style="width:100px">
-            <button id="submitButton" type="submit" onclick="submit()">Submit</button></div>    
-        </div>
-        <div id="results" class="center display-6"></div>
-
-        <hr>
-        <div style="padding: 10px">
-            <button type="button" onclick="displayStats();" class="btn btn-outline-primary">Show Progress</button>
-        </div>
-
-        <div id="userStats" class="container-fluid">
+        <div class="container">
             <div class="row">
-                <div id="userStats-1" class="col-sm"></div>
-                <div id="userStats-2" class="col-sm"></div>
-                <div id="userStats-3" class="col-sm"></div>
-                <div id="userStats-4" class="col-sm"></div>
-                <div id="userStats-5" class="col-sm"></div>
-                <div id="userStats-6" class="col-sm"></div>
-            </div>
-            <div class="row">
-                <div id="userStats-7" class="col-sm"></div>
-                <div id="userStats-8" class="col-sm"></div>
-                <div id="userStats-9" class="col-sm"></div>
-                <div id="userStats-10" class="col-sm"></div>
-                <div id="userStats-11" class="col-sm"></div>
-                <div id="userStats-12" class="col-sm"></div>
+                <div class="col">
+
+                    <div style="padding: 10px">
+                        <button type="button" onclick="start()" class="btn btn-outline-primary">Start</button>
+                    </div>
+                    <!-- 
+                    <button class="input-fire" onclick="start()">Start</button>
+                    <br><br><br>
+                    <button class="input-fire" onclick="clearStorage()">Clear</button> -->
+        
+                    <div id="questionAndAnswerContainer" style="display:none">
+                        <span id="question" class="display-6"></span>
+                        <input id="answer" autocomplete="off" class="display-6" style="width:100px">
+                        <button id="submitButton" type="submit" onclick="submit()">Submit</button>
+                    </div>
+                    <div id="results" class="display-6"></div>
+                </div>
+            
+                <div class="col">
+                    <div style="padding: 10px">
+                        <button type="button" onclick="displayStats();" class="btn btn-outline-primary">Show Progress</button>
+                    </div>
+            
+                    <div id="userStats">
+                        <div class="row">
+                            <div id="userStats-1" class="col-sm"></div>
+                            <div id="userStats-2" class="col-sm"></div>
+                            <div id="userStats-3" class="col-sm"></div>
+                            <div id="userStats-4" class="col-sm"></div>
+                            <div id="userStats-5" class="col-sm"></div>
+                            <div id="userStats-6" class="col-sm"></div>
+                        </div>
+                        <div class="row">
+                            <div id="userStats-7" class="col-sm"></div>
+                            <div id="userStats-8" class="col-sm"></div>
+                            <div id="userStats-9" class="col-sm"></div>
+                            <div id="userStats-10" class="col-sm"></div>
+                            <div id="userStats-11" class="col-sm"></div>
+                            <div id="userStats-12" class="col-sm"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
