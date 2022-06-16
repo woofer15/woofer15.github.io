@@ -42,7 +42,13 @@
     background-color: red;
     margin: 1px;
 }
-
+.divSpacer {
+    background-color: transparent;
+    border: 0px;
+    width:250px;
+    height:auto;
+    display:inline-block;
+}
 
 .bg-ocean {
     background-image: linear-gradient(to bottom, #00FFFF, #000000);

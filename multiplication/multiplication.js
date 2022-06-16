@@ -4,7 +4,6 @@ let allPossibleQuestions = []
 let currentQuestions = []
 let currentQuestionNum = 0
 let currentQuestionStartTime
-let showProgress = true
 
 let attempt = {
     hasBeenAttempted: false,
@@ -30,7 +29,6 @@ function init() {
     // fill the allPossibleQuestions array
     for (let i = 1; i < 13; i++) {
         for (let j = 1; j < 13; j++) {
-            // verify it exists in storage
             let questionFromStorage = readStorage(i, j)
             if (questionFromStorage != null) {
                 allPossibleQuestions.push(createKey(i, j))
@@ -39,14 +37,14 @@ function init() {
     }
 }
 
-function start() {
+function handleStartButtonClick() {
     clearResultsContainer()
 
     currentQuestions = []
     currentQuestionNum = 0
     showProgress = true
     
-    // get all the questions that should be attempted in this next session
+    // get all the possible questions that should be attempted in this next session
     let unansweredQuestions = findQuestions()
 
     // pick NUM_QUESTIONS_PER_SESSION random questions for this session
@@ -63,12 +61,15 @@ function start() {
         currentQuestions.push(unansweredQuestions[questionIndex[x]])
     }
 
-    console.log(currentQuestions)
+    // console.log(currentQuestions)
 
     displayQuestion()
 
     // unhide the question/answer container
-    document.getElementById('questionAndAnswerContainer').style.display = 'block'     
+    document.getElementById('questionAndAnswerContainer').style.display = 'block'
+
+    // hide the Start button until all questions are answered
+    document.getElementById('startButton').style.display = 'none'
 }
 
 function displayQuestion() {
@@ -84,6 +85,7 @@ function createKey(first, second) {
 function readStorage(key) {    
     let questionResultFromStorage = localStorage.getItem(key)
     if (questionResultFromStorage === null) {
+        // if it did not exist, create it
         writeStorage(key, entry)
         questionResultFromStorage = localStorage.getItem(key)
     }
@@ -236,6 +238,7 @@ function submit() {
         displayQuestion()
     }
     else {
+        document.getElementById('startButton').style.display = 'block'
         document.getElementById('questionAndAnswerContainer').style.display = 'none'
     }
 }
@@ -296,36 +299,49 @@ function updateResultsContainer(userQuestionAndAnswer, correctAnswer, isCorrect)
     document.getElementById('results').appendChild(resultRow)
 }
  
-function displayStats() {
+function handleShowHideProgressButtonClick() {
     let button = document.getElementById('progressButton')
+    let showProgress = (button.innerText === 'Show Progress')
     showProgress === true ? button.innerText = 'Hide Progress' : button.innerText = 'Show Progress'
-    showProgress === true ? showProgress = false : showProgress = true
 
     if (showProgress === true) {
-        for (let i = 1; i < 13; i++) {
+        refreshProgress()
 
-            let column = document.getElementById('userStats-' +i)
-            column.innerText = i
+        document.getElementById('userStats').style.display = 'block'
+    } 
+    else {
+        document.getElementById('userStats').style.display = 'none'
+    }
+}
 
-            for (let j = 1; j < 13; j++) {  
+function handleRefreshButtonClick() {
+    refreshProgress()
+}
 
-                let storageEntry = readStorage(createKey(i, j))
-                let attempts = getAttempts(storageEntry)
-                let elem = document.createElement('div')
+function handleClearProgressButtonClick() {
+    clearStorage()
+    refreshProgress()
+}
 
-                for (const attempt of attempts) {
-                    elem.appendChild(createAttemptElem(j, attempt))
-                }
-            
-                column.appendChild(elem)
+function refreshProgress() {
+    for (let i = 1; i < 13; i++) {
+
+        let column = document.getElementById('userStats-' +i)
+        column.innerText = i
+
+        for (let j = 1; j < 13; j++) {  
+
+            let storageEntry = readStorage(createKey(i, j))
+            let attempts = getAttempts(storageEntry)
+            let elem = document.createElement('div')
+
+            for (const attempt of attempts) {
+                elem.appendChild(createAttemptElem(j, attempt))
             }
+        
+            column.appendChild(elem)
         }
-        let stats = document.getElementById('userStats')
-        stats.style.display = 'none'
-    } else {
-        let stats = document.getElementById('userStats')
-        stats.style.display = 'block'
-    };
+    }
 }
 
 function createAttemptElem(index, attempt) {
@@ -340,8 +356,7 @@ function createAttemptElem(index, attempt) {
     else {
         if (attempt.isAnsweredCorrectly === true) {
             if (parseInt(attempt.timeTaken) > 2) {
-                console.log(attempt.timeTaken + " vs " +parseInt(attempt.timeTaken))
-                elem.classList.add('multiplierStatusCorrectButSlow')
+                 elem.classList.add('multiplierStatusCorrectButSlow')
             }
             else {
                 elem.classList.add('multiplierStatusCorrect')
