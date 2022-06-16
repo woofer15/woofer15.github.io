@@ -12,23 +12,24 @@ let attempt = {
 }
 
 let entry = {
-    firstTry: attempt,
-    secondTry: attempt,
-    thirdTry: attempt
+    attempts: [attempt, attempt, attempt],
 }
 
 init()
 
 function init() {
+
     document.getElementById('answer').addEventListener("keyup", function(event) {
         if (event.code === 'Enter') {
-            submit()
+            handleSubmitAnswerButtonClick()
         }
     })
 
     // fill the allPossibleQuestions array
     for (let i = 1; i < 13; i++) {
         for (let j = 1; j < 13; j++) {
+            // this will also create a default blank entry in local storage
+            // if one did not already exist
             let questionFromStorage = readStorage(i, j)
             if (questionFromStorage != null) {
                 allPossibleQuestions.push(createKey(i, j))
@@ -42,23 +43,21 @@ function handleStartButtonClick() {
 
     currentQuestions = []
     currentQuestionNum = 0
-    showProgress = true
     
     // get all the possible questions that should be attempted in this next session
-    let unansweredQuestions = findQuestions()
+    let possibleQuestionsToAsk = findQuestions()
 
     // pick NUM_QUESTIONS_PER_SESSION random questions for this session
-    let questionIndex = []
-    let index
-    while (questionIndex.length < NUM_QUESTIONS_PER_SESSION) {
-        index = getRandomIntBetween(0, unansweredQuestions.length - 1)
+    let randomQuestionIndex = []
+    while (randomQuestionIndex.length < NUM_QUESTIONS_PER_SESSION) {
+        let index = getRandomIntBetween(0, possibleQuestionsToAsk.length - 1)
         // make sure we do not add duplicate random numbers
-        if (questionIndex.indexOf(index) === -1) {
-            questionIndex.push(index)
+        if (randomQuestionIndex.indexOf(index) === -1) {
+            randomQuestionIndex.push(index)
         }
     }
-    for (let x = 0; x < questionIndex.length; x++) {
-        currentQuestions.push(unansweredQuestions[questionIndex[x]])
+    for (let i = 0; i < randomQuestionIndex.length; i++) {
+        currentQuestions.push(possibleQuestionsToAsk[randomQuestionIndex[i]])
     }
 
     // console.log(currentQuestions)
@@ -108,7 +107,7 @@ function findQuestions() {
     // get all the questions that have not been tried even once
     allPossibleQuestions.forEach(key => {
         let questionFromStorage = readStorage(key)
-        if (questionFromStorage.firstTry.hasBeenAttempted === false) {
+        if (questionFromStorage.attempts[0].hasBeenAttempted === false) {
             unansweredQuestions.push(key)
         }
     })
@@ -119,7 +118,7 @@ function findQuestions() {
     // get all the questions that have not been tried twice
     allPossibleQuestions.forEach(key => {
         let questionFromStorage = readStorage(key)
-        if (questionFromStorage.secondTry.hasBeenAttempted === false) {
+        if (questionFromStorage.attempts[1].hasBeenAttempted === false) {
             unansweredQuestions.push(key)
         }
     })
@@ -130,7 +129,7 @@ function findQuestions() {
     // get all the questions that have not been tried three times
     allPossibleQuestions.forEach(key => {
         let questionFromStorage = readStorage(key)
-        if (questionFromStorage.thirdTry.hasBeenAttempted === false) {
+        if (questionFromStorage.attempts[2].hasBeenAttempted === false) {
             unansweredQuestions.push(key)
         }
     })
@@ -142,10 +141,10 @@ function findQuestions() {
     // but the last attempt was an incorrect answer
     allPossibleQuestions.forEach(key => {
         let questionFromStorage = readStorage(key)
-        if ((questionFromStorage.firstTry.hasBeenAttempted) && 
-            (questionFromStorage.secondTry.hasBeenAttempted) &&
-            (questionFromStorage.thirdTry.hasBeenAttempted) && 
-            (questionFromStorage.thirdTry.isAnsweredCorrectly === false)) {
+        if ((questionFromStorage.attempts[0].hasBeenAttempted) && 
+            (questionFromStorage.attempts[1].hasBeenAttempted) &&
+            (questionFromStorage.attempts[2].hasBeenAttempted) && 
+            (questionFromStorage.attempts[2].isAnsweredCorrectly === false)) {
             unansweredQuestions.push(key)
         }
     })
@@ -159,14 +158,20 @@ function findQuestions() {
     let sortMe = []
     allPossibleQuestions.forEach(key => {
         let questionFromStorage = readStorage(key)
-        if ((questionFromStorage.firstTry.hasBeenAttempted) && 
-            (questionFromStorage.secondTry.hasBeenAttempted) &&
-            (questionFromStorage.thirdTry.hasBeenAttempted) && 
-            (questionFromStorage.thirdTry.isAnsweredCorrectly)) {
+        if ((questionFromStorage.attempts[0].hasBeenAttempted) && 
+            (questionFromStorage.attempts[1].hasBeenAttempted) &&
+            (questionFromStorage.attempts[2].hasBeenAttempted) && 
+            (questionFromStorage.attempts[2].isAnsweredCorrectly)) {
             sortMe.push(key)
         }
     })
-
+    sortMe.sort(function(a, b) {
+        if (a.attempts[2].timeTaken > b.attempts[2].timeTaken) {
+            return -1
+        }
+        return 1
+    })
+    unansweredQuestions = unansweredQuestions.concat(sortMe)
 
     return unansweredQuestions
     // if (allPossibleQuestions.length < NUM_QUESTIONS_PER_SESSION) {
@@ -186,39 +191,11 @@ function findQuestions() {
 
 }
 
-let numArray = []
-let tenQuestions = []
-
-function sort(first, second) {
-    let key = first + 'x' + second;
-    let storage = JSON.parse(localStorage.getItem(key))
-    let average = storage.firstTry.timeTaken + storage.secondTry.timeTaken + storage.thirdTry.timeTaken / 3
-    numArray.push(average)
-
-    numArray.sort(function(a, b) {
-        return b - a;
-    });
-};
-
-function sort_2() {
-    let key = first + 'x' + second;
-    let storage = JSON.parse(localStorage.getItem(key))
-    let average = storage.firstTry.timeTaken + storage.secondTry.timeTaken + storage.thirdTry.timeTaken / 3
-
-    for (let i = 1; i < 13; x++) {
-        for (let j = 1; j < 13; y++) {
-            if (numArray[0] === average || numArray[1] === average || numArray[2] === average || numArray[3] === average || numArray[4] === average || numArray[5] === average || numArray[6] === average || numArray[7] === average || numArray[8] === average || numArray[9] === average) {
-                tenQuestions.push(key)
-            }
-        }
-    }
-};
-
 function getRandomIntBetween(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function submit() {
+function handleSubmitAnswerButtonClick() {
     
     let timeTaken = (Date.now() - currentQuestionStartTime) / 1000
 
@@ -228,8 +205,8 @@ function submit() {
     let isCorrect = (userAnswer === correctAnswer)
     updateResultsContainer(question + " = " +userAnswer, correctAnswer, isCorrect)
 
-    let storage  = JSON.parse(localStorage.getItem(question))
-    storage = updateStorage(storage, timeTaken, isCorrect)
+    let storage = JSON.parse(localStorage.getItem(question))
+    storage = updateStorageEntry(storage, timeTaken, isCorrect)
     writeStorage(question, storage)
     
     currentQuestionNum++
@@ -243,39 +220,30 @@ function submit() {
     }
 }
 
-function shiftStorage(storage) {
-    storage.firstTry.hasBeenAttempted = storage.secondTry.hasBeenAttempted
-    storage.firstTry.isAnsweredCorrectly = storage.secondTry.isAnsweredCorrectly
-    storage.firstTry.timeTaken = storage.secondTry.timeTaken
-
-    storage.secondTry.hasBeenAttempted = storage.thirdTry.hasBeenAttempted
-    storage.secondTry.isAnsweredCorrectly = storage.thirdTry.isAnsweredCorrectly
-    storage.secondTry.timeTaken = storage.thirdTry.timeTaken
- 
-    return
-}
-
-function updateStorage(storage, time, correct) {
-    if (storage.firstTry.hasBeenAttempted === false) {
-        storage.firstTry.hasBeenAttempted = true
-        storage.firstTry.isAnsweredCorrectly = correct
-        storage.firstTry.timeTaken = time
-    } else if (storage.secondTry.hasBeenAttempted === false) {
-        storage.secondTry.hasBeenAttempted = true
-        storage.secondTry.isAnsweredCorrectly = correct
-        storage.secondTry.timeTaken = time
-    } else if (storage.thirdTry.hasBeenAttempted === false) {
-        storage.thirdTry.hasBeenAttempted = true
-        storage.thirdTry.isAnsweredCorrectly = correct
-        storage.thirdTry.timeTaken = time
+function updateStorageEntry(entry, time, correct) {
+    if (entry.attempts[0].hasBeenAttempted === false) {
+        entry.attempts[0].hasBeenAttempted = true
+        entry.attempts[0].isAnsweredCorrectly = correct
+        entry.attempts[0].timeTaken = time
+    }
+    else if (entry.attempts[1].hasBeenAttempted === false) {
+        entry.attempts[1].hasBeenAttempted = true
+        entry.attempts[1].isAnsweredCorrectly = correct
+        entry.attempts[2].timeTaken = time
+    } else if (entry.attempts[2].hasBeenAttempted === false) {
+        entry.attempts[2].hasBeenAttempted = true
+        entry.attempts[2].isAnsweredCorrectly = correct
+        entry.attempts[2].timeTaken = time
     } else {
-        shiftStorage(storage)
-        storage.thirdTry.hasBeenAttempted = true
-        storage.thirdTry.isAnsweredCorrectly = correct
-        storage.thirdTry.timeTaken = time
+        let thirdAttempt = attempt
+        thirdAttempt.hasBeenAttempted = true
+        thirdAttempt.isAnsweredCorrectly = correct
+        thirdAttempt.timeTaken = time
+        entry.attempts.shift() // remove attempt 1 and shift attempt 2 and 3 up 1 position
+        entry.attempts.push(thirdAttempt) // add a new third attempt
     }    
 
-    return storage
+    return entry
 }
 
 function clearResultsContainer() {
@@ -332,7 +300,7 @@ function refreshProgress() {
         for (let j = 1; j < 13; j++) {  
 
             let storageEntry = readStorage(createKey(i, j))
-            let attempts = getAttempts(storageEntry)
+            let attempts = storageEntry.attempts
             let elem = document.createElement('div')
 
             for (const attempt of attempts) {
@@ -370,15 +338,57 @@ function createAttemptElem(index, attempt) {
     return elem
 }
 
-function getAttempts(storageEntry) {
-    let attempt1 = {hasBeenAttempted: storageEntry.firstTry.hasBeenAttempted, isAnsweredCorrectly: storageEntry.firstTry.isAnsweredCorrectly, timeTaken: storageEntry.firstTry.timeTaken }
-    let attempt2 = {hasBeenAttempted: storageEntry.secondTry.hasBeenAttempted, isAnsweredCorrectly: storageEntry.secondTry.isAnsweredCorrectly, timeTaken: storageEntry.secondTry.timeTaken }
-    let attempt3 = {hasBeenAttempted: storageEntry.thirdTry.hasBeenAttempted, isAnsweredCorrectly: storageEntry.thirdTry.isAnsweredCorrectly, timeTaken: storageEntry.thirdTry.timeTaken }
-
-    let attempts = []
-    attempts.push(attempt1)
-    attempts.push(attempt2)
-    attempts.push(attempt3)
-
-    return attempts
+function handleFillRandomProgressButtonClick() {
+    for (let i = 1; i < 13; i++) {
+        for (let j = 1; j < 13; j++) {
+            let questionFromStorage = readStorage(i, j)
+            for (let k = 0; k < 2; k++) {
+                questionFromStorage.attempts[k].hasBeenAttempted = true
+                questionFromStorage.attempts[k].isAnsweredCorrectly = true
+                questionFromStorage.attempts[k].timeTaken = 1.0
+            }
+            writeStorage(createKey(i, j), questionFromStorage)
+        }
+    }
 }
+
+//---------
+function shiftEntryAttempt(entry) {
+    entry.firstTry.hasBeenAttempted = entry.secondTry.hasBeenAttempted
+    entry.firstTry.isAnsweredCorrectly = entry.secondTry.isAnsweredCorrectly
+    entry.firstTry.timeTaken = entry.secondTry.timeTaken
+
+    entry.secondTry.hasBeenAttempted = entry.thirdTry.hasBeenAttempted
+    entry.secondTry.isAnsweredCorrectly = entry.thirdTry.isAnsweredCorrectly
+    entry.secondTry.timeTaken = entry.thirdTry.timeTaken
+ 
+    return
+}
+
+let numArray = []
+let tenQuestions = []
+
+function sort(first, second) {
+    let key = first + 'x' + second;
+    let storage = JSON.parse(localStorage.getItem(key))
+    let average = storage.firstTry.timeTaken + storage.secondTry.timeTaken + storage.thirdTry.timeTaken / 3
+    numArray.push(average)
+
+    numArray.sort(function(a, b) {
+        return b - a;
+    });
+};
+
+function sort_2() {
+    let key = first + 'x' + second;
+    let storage = JSON.parse(localStorage.getItem(key))
+    let average = storage.firstTry.timeTaken + storage.secondTry.timeTaken + storage.thirdTry.timeTaken / 3
+
+    for (let i = 1; i < 13; x++) {
+        for (let j = 1; j < 13; y++) {
+            if (numArray[0] === average || numArray[1] === average || numArray[2] === average || numArray[3] === average || numArray[4] === average || numArray[5] === average || numArray[6] === average || numArray[7] === average || numArray[8] === average || numArray[9] === average) {
+                tenQuestions.push(key)
+            }
+        }
+    }
+};

@@ -30,7 +30,7 @@
                     <div id="questionAndAnswerContainer" style="display:none">
                         <span id="question" class="display-6"></span>
                         <input id="answer" autocomplete="off" class="display-6" style="width:100px">
-                        <button id="submitButton" type="submit" onclick="submit()">Submit</button>
+                        <button id="submitButton" type="submit" onclick="handleSubmitAnswerButtonClick()">Submit</button>
                     </div>
                     <hr>
                     <div id="results" class="display-6"></div>
@@ -38,6 +38,7 @@
             
                 <div class="col">
                     <button id="progressButton" type="button" onclick="handleShowHideProgressButtonClick();" class="btn btn-outline-primary">Show Progress</button>
+                    <button id="randomButton" type="button" onclick="handleFillRandomProgressButtonClick();" class="btn btn-outline-primary">Fill Random Progress</button>
                     <br>
                     <br>
                     <div style="display: none; background-color: azure" "container" id="userStats">
