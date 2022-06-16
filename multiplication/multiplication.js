@@ -4,6 +4,7 @@ let allPossibleQuestions = []
 let currentQuestions = []
 let currentQuestionNum = 0
 let currentQuestionStartTime
+let showProgress = true
 
 let attempt = {
     hasBeenAttempted: false,
@@ -43,6 +44,7 @@ function start() {
 
     currentQuestions = []
     currentQuestionNum = 0
+    showProgress = true
     
     // get all the questions that should be attempted in this next session
     let unansweredQuestions = findQuestions()
@@ -295,24 +297,35 @@ function updateResultsContainer(userQuestionAndAnswer, correctAnswer, isCorrect)
 }
  
 function displayStats() {
-    for (let i = 1; i < 13; i++) {
+    let button = document.getElementById('progressButton')
+    showProgress === true ? button.innerText = 'Hide Progress' : button.innerText = 'Show Progress'
+    showProgress === true ? showProgress = false : showProgress = true
 
-        let column = document.getElementById('userStats-' +i)
-        column.innerText = i
+    if (showProgress === true) {
+        for (let i = 1; i < 13; i++) {
 
-        for (let j = 1; j < 13; j++) {  
+            let column = document.getElementById('userStats-' +i)
+            column.innerText = i
 
-            let storageEntry = readStorage(createKey(i, j))
-            let attempts = getAttempts(storageEntry)
-            let elem = document.createElement('div')
+            for (let j = 1; j < 13; j++) {  
 
-            for (const attempt of attempts) {
-                elem.appendChild(createAttemptElem(j, attempt))
+                let storageEntry = readStorage(createKey(i, j))
+                let attempts = getAttempts(storageEntry)
+                let elem = document.createElement('div')
+
+                for (const attempt of attempts) {
+                    elem.appendChild(createAttemptElem(j, attempt))
+                }
+            
+                column.appendChild(elem)
             }
-        
-            column.appendChild(elem)
         }
-    }
+        let stats = document.getElementById('userStats')
+        stats.style.display = 'none'
+    } else {
+        let stats = document.getElementById('userStats')
+        stats.style.display = 'block'
+    };
 }
 
 function createAttemptElem(index, attempt) {

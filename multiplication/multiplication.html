@@ -26,10 +26,6 @@
                     <div style="padding: 10px">
                         <button type="button" onclick="start()" class="btn btn-outline-primary">Start</button>
                     </div>
-                    <!-- 
-                    <button class="input-fire" onclick="start()">Start</button>
-                    <br><br><br>
-                    <button class="input-fire" onclick="clearStorage()">Clear</button> -->
         
                     <div id="questionAndAnswerContainer" style="display:none">
                         <span id="question" class="display-6"></span>
@@ -41,7 +37,7 @@
             
                 <div class="col">
                     <div style="padding: 10px">
-                        <button type="button" onclick="displayStats();" class="btn btn-outline-primary">Show Progress</button>
+                        <button id="progressButton" type="button" onclick="displayStats();" class="btn btn-outline-primary">Show Progress</button>
                     </div>
             
                     <div id="userStats">
@@ -64,6 +60,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div>
+            <button onclick="clearStorage()">Clear Progress</button>
         </div>
     </body>
 </html>
