@@ -19,10 +19,9 @@
         <h1 class="display-1 text-center">Multiplication Practice</h1>
         <hr>
 
-        <div class="container">
+        <div class="container-fluid text-center">
             <div class="row">
-
-                <div class="col" style="border-right: 1px dashed black;">
+                <div class="col">
                     <div style="padding: 10px">
                         <button id="startButton" type="button" onclick="handleStartButtonClick();" class="btn btn-outline-primary">Start</button>
                     </div>
@@ -32,13 +31,14 @@
                         <input id="answer" autocomplete="off" class="display-6" style="width:100px">
                         <button id="submitButton" type="submit" onclick="handleSubmitAnswerButtonClick()">Submit</button>
                     </div>
-                    <hr>
-                    <div id="resultsContainer" style="display:none" class="display-6"></div>
-                </div>
-            
+                    <div id="resultsContainer" style="display:none" class="display-6">
+                    </div>
+                </div>            
+            </div>
+            <hr>
+            <div class="row">
                 <div class="col">
                     <button id="progressButton" type="button" onclick="handleShowHideProgressButtonClick();" class="btn btn-outline-primary">Show Progress</button>
-                    <button id="randomButton" type="button" onclick="handleFillRandomProgressButtonClick();" class="btn btn-outline-primary">Fill Random Progress</button>
                     <br>
                     <br>
                     <div style="display: none; background-color: azure" "container" id="userStats">
@@ -63,10 +63,11 @@
                         <br>
                         <button id="updateProgressButton" type="button" onclick="handleRefreshButtonClick();" class="btn btn-outline-primary">Refresh Progress</button>    
                         <button id="clearStorageButton" type="button" onclick="handleClearProgressButtonClick();" class="btn btn-outline-primary">Clear Progress</button>
+                        <button id="randomButton" type="button" onclick="handleFillRandomProgressButtonClick();" class="btn btn-outline-primary">Fill Random Progress</button>
                         <p>
                     </div>
                 </div>
-            </div>
+            </div>    
         </div>
     </body>
 </html>

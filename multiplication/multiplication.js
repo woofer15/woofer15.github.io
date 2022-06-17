@@ -5,9 +5,9 @@ let currentQuestions = []
 let currentQuestionNum = 0
 let currentQuestionStartTime
 
-const LEVEL_EASY = 20
-const LEVEL_MED = 10
-const LEVEL_HARD = 5
+const LEVEL_EASY = 10
+const LEVEL_MED = 7
+const LEVEL_HARD = 3
 
 let currentLevel = LEVEL_EASY
 
@@ -163,12 +163,6 @@ function findQuestions() {
         }
         return 1
     })
-    // sortMe.forEach(key => {
-    //     let questionFromStorage = readStorage(key)
-    //     let avgTimeA = (questionFromStorage.attempts[0].timeTaken + questionFromStorage.attempts[1].timeTaken + questionFromStorage.attempts[2].timeTaken) / 3
-
-    //     console.log(key + ' => ' +avgTimeA)
-    // })
     unansweredQuestions = unansweredQuestions.concat(sortMe.slice(0, NUM_QUESTIONS_PER_SESSION))
 
     return unansweredQuestions
@@ -289,7 +283,7 @@ function refreshProgress() {
             let elem = document.createElement('div')
 
             for (const attempt of attempts) {
-                elem.appendChild(createAttemptElem(j, attempt))
+                elem.appendChild(createProgressRow(j, attempt))
             }
         
             column.appendChild(elem)
@@ -297,7 +291,7 @@ function refreshProgress() {
     }
 }
 
-function createAttemptElem(index, attempt) {
+function createProgressRow(index, attempt) {
 
     let elem = document.createElement('span')
     //elem.innerText = attempt.timeTaken
@@ -326,14 +320,32 @@ function createAttemptElem(index, attempt) {
 function handleFillRandomProgressButtonClick() {
     for (let i = 1; i < 13; i++) {
         for (let j = 1; j < 13; j++) {
+
+            if ((getRandomIntBetween(0, 100) % 2) === 0) {
+            }
+
             let questionFromStorage = readStorage(i, j)
             for (let k = 0; k < 3; k++) {
-                questionFromStorage.attempts[k].hasBeenAttempted = true
-                questionFromStorage.attempts[k].isAnsweredCorrectly = true
-                questionFromStorage.attempts[k].timeTaken = getRandomIntBetween(0, currentLevel)
+                let hasBeenAttempted = ((getRandomIntBetween(0, 100) % 2) === 0) ? true : false
+                
+                if ((k > 0) && (questionFromStorage.attempts[k-1].hasBeenAttempted === false)) {
+                    break
+                }
+
+                questionFromStorage.attempts[k].hasBeenAttempted = hasBeenAttempted
+
+                if (hasBeenAttempted) {
+                    let isCorrect = ((getRandomIntBetween(0, 100) % 2) === 0) ? true : false
+                    questionFromStorage.attempts[k].isAnsweredCorrectly = ((getRandomIntBetween(0, 100) % 2) === 0) ? true : false
+
+                    if (isCorrect) {
+                        questionFromStorage.attempts[k].timeTaken = getRandomIntBetween(0, currentLevel + 3)
+                    }
+                }                
             }
 
             writeStorage(createKey(i, j), questionFromStorage)
+
         }
     }
 }
